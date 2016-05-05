@@ -28,6 +28,12 @@
             </div>
         </nav>
 
+        <div class="row timer">
+            <span id="timernum">0.00s / 10.00s</span>
+            <span id="timerbar"></span>
+            <!-- <img id="loading" src="img/loading_squares.gif" alt="loading_squares"> -->
+        </div>
+
         <div class="row">
             <div class="board">
                 <div class="col l1 s2">
@@ -55,7 +61,12 @@
                         <div class="piece">
                             <span class=""></span>
                         </div>
-                    </div>                                                
+                    </div> 
+                    <div class="grid grey lighten-1 r5" id="r5c0">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>                                                                   
                 </div>
                 <div class="col l1 s2">
                     <div class="grid grey lighten-1" id="r0c1">
@@ -83,6 +94,11 @@
                             <span class=""></span>
                         </div>
                     </div>
+                    <div class="grid grey lighten-2 r5" id="r5c1">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>                    
                 </div>
                 <div class="col l1 s2">
                     <div class="grid grey lighten-2" id="r0c2">
@@ -110,6 +126,11 @@
                             <span class=""></span>
                         </div>
                     </div>
+                    <div class="grid grey lighten-1 r5" id="r5c2">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>                    
                 </div>
                 <div class="col l1 s2">
                     <div class="grid grey lighten-1" id="r0c3">
@@ -133,6 +154,11 @@
                         </div>
                     </div>
                     <div class="grid grey lighten-1" id="r4c3">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>
+                    <div class="grid grey lighten-2 r5" id="r5c3">
                         <div class="piece">
                             <span class=""></span>
                         </div>
@@ -164,71 +190,121 @@
                             <span class=""></span>
                         </div>
                     </div>
+                    <div class="grid grey lighten-1 r5" id="r5c4">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>                    
                 </div>
+                <div class="col l1 s2 c5">
+                    <div class="grid grey lighten-1" id="r0c5">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>
+                    <div class="grid grey lighten-2" id="r1c5">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>
+                    <div class="grid grey lighten-1" id="r2c5">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>
+                    <div class="grid grey lighten-2" id="r3c5">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>
+                    <div class="grid grey lighten-1" id="r4c5">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>
+                    <div class="grid grey lighten-2" id="r5c5">
+                        <div class="piece">
+                            <span class=""></span>
+                        </div>
+                    </div>                    
+                </div>                
             </div>
 
-            <div class="col l1 s2 center">
-                <span class="">---</span>
-            </div> 
-
             <div class="col l6 grey lighten-4 rightpart">
-                <div class="row blackplayer">
-                    <div class="col l2">
-                        &#x2b24;
+                <div class="settings">
+                    <div class="row blackplayer">
+                        <div class="col l2">
+                            &#x2b24;
+                        </div>
+                        <div class="col l5 who">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect humanbtn" for="option-1" value="H">
+                                <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
+                                <span class="mdl-radio__label">Human</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect aibtn" for="option-2" value="A">
+                                <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2">
+                                <span class="mdl-radio__label">AI</span>
+                            </label>
+                        </div>
+                        <div class="col l5 difficultylevel">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3" value="l1">
+                                <input type="radio" id="option-3" class="mdl-radio__button" name="options2" value="1" checked disabled>
+                                <span class="mdl-radio__label">Naive</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4" value="l2">
+                                <input type="radio" id="option-4" class="mdl-radio__button" name="options2" value="2" disabled>
+                                <span class="mdl-radio__label">Medium</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-5" value="l3">
+                                <input type="radio" id="option-5" class="mdl-radio__button" name="options2" value="3" disabled>
+                                <span class="mdl-radio__label">AlphaLoA</span>
+                            </label> 
+                        </div>
                     </div>
-                    <div class="col l5 who">
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect humanbtn" for="option-1" value="H">
-                            <input type="radio" id="option-1" class="mdl-radio__button" name="options" value="1" checked>
-                            <span class="mdl-radio__label">Human</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect aibtn" for="option-2" value="A">
-                            <input type="radio" id="option-2" class="mdl-radio__button" name="options" value="2">
-                            <span class="mdl-radio__label">AI</span>
-                        </label>
-                    </div>
-                    <div class="col l5 difficultylevel">
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-3" value="2">
-                            <input type="radio" id="option-3" class="mdl-radio__button" name="options2" value="1" checked disabled>
-                            <span class="mdl-radio__label">Naive</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-4" value="5">
-                            <input type="radio" id="option-4" class="mdl-radio__button" name="options2" value="2" disabled>
-                            <span class="mdl-radio__label">Medium</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-5" value="8">
-                            <input type="radio" id="option-5" class="mdl-radio__button" name="options2" value="3" disabled>
-                            <span class="mdl-radio__label">AlphaLoA</span>
-                        </label> 
-                    </div>
-                </div>
-                <div class="row whiteplayer">
-                    <div class="col l2">
-                        &#x25ef;
-                    </div>
-                    <div class="col l5 who">
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect humanbtn" for="option-11" value="H">
-                            <input type="radio" id="option-11" class="mdl-radio__button" name="options3" value="1">
-                            <span class="mdl-radio__label">Human</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect aibtn" for="option-12" value="A">
-                            <input type="radio" id="option-12" class="mdl-radio__button" name="options3" value="2" checked>
-                            <span class="mdl-radio__label">AI</span>
-                        </label>
-                    </div>
-                    <div class="col l5 difficultylevel">
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-13" value="2">
-                            <input type="radio" id="option-13" class="mdl-radio__button" name="options4" value="1" checked>
-                            <span class="mdl-radio__label">Naive</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-14" value="5">
-                            <input type="radio" id="option-14" class="mdl-radio__button" name="options4" value="2">
-                            <span class="mdl-radio__label">Medium</span>
-                        </label>
-                        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-15" value="8">
-                            <input type="radio" id="option-15" class="mdl-radio__button" name="options4" value="3">
-                            <span class="mdl-radio__label">AlphaLoA</span>
-                        </label> 
-                    </div>             
+                    <div class="row whiteplayer">
+                        <div class="col l2">
+                            &#x25ef;
+                        </div>
+                        <div class="col l5 who">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect humanbtn" for="option-11" value="H">
+                                <input type="radio" id="option-11" class="mdl-radio__button" name="options3" value="1">
+                                <span class="mdl-radio__label">Human</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect aibtn" for="option-12" value="A">
+                                <input type="radio" id="option-12" class="mdl-radio__button" name="options3" value="2" checked>
+                                <span class="mdl-radio__label">AI</span>
+                            </label>
+                        </div>
+                        <div class="col l5 difficultylevel">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-13" value="l1">
+                                <input type="radio" id="option-13" class="mdl-radio__button" name="options4" value="1" checked>
+                                <span class="mdl-radio__label">Naive</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-14" value="l2">
+                                <input type="radio" id="option-14" class="mdl-radio__button" name="options4" value="2">
+                                <span class="mdl-radio__label">Medium</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-15" value="l3">
+                                <input type="radio" id="option-15" class="mdl-radio__button" name="options4" value="3">
+                                <span class="mdl-radio__label">AlphaLoA</span>
+                            </label> 
+                        </div>             
+                    </div>  
+                    <div class="row boardsize">
+                        <div class="col l2">
+                            Board Size
+                        </div>
+                        <div class="col l5">
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect boardsize5" for="option-21" value="5">
+                                <input type="radio" id="option-21" class="mdl-radio__button" name="options5" value="1" checked>
+                                <span class="mdl-radio__label">5x5</span>
+                            </label>
+                            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect boardsize6" for="option-22" value="6">
+                                <input type="radio" id="option-22" class="mdl-radio__button" name="options5" value="2">
+                                <span class="mdl-radio__label">6x6</span>
+                            </label>
+                        </div>
+                    </div>                                
                 </div>              
                 <div class="row">
                     <button class="btn waves-effect waves-light teal" id="start" name="action">Start
@@ -241,23 +317,18 @@
                 <div class="row light-blue lighten-3">
                     <span>Info:</span>
                 </div>
-                <div class="row">
-                    <span>(1) Maximum depth of game tree:</span>
-                </div>
-                <div class="row">
-                    <span>(2) Total number of nodes:</span>
-                </div>
-                <div class="row">
-                    <span>(3) &#x2b24;MAX - evaluation called:</span>
-                </div> 
-                <div class="row">
-                    <span>(4) &#x25ef;MIN - evaluation called:</span>
-                </div> 
-                <div class="row">
-                    <span>(5) &#x2b24;MAX - pruning occurred:</span>
-                </div> 
-                <div class="row">
-                    <span>(6) &#x25ef;MIN - pruning occurred:</span>
+                <div class="statistics">
+                    <span>(1) Maximum depth of game tree: <span id="maxdepth"></span></span>
+                    <br>
+                    <span>(2) Total number of nodes: <span id="totalnodes"></span></span>
+                    <br>
+                    <span>(3) &#x2b24;MAX - evaluation called: <span id="maxeval"></span></span>
+                    <br>
+                    <span>(4) &#x25ef;MIN - evaluation called: <span id="mineval"></span></span>
+                    <br>
+                    <span>(5) &#x2b24;MAX - pruning occurred: <span id="maxprun"></span></span>
+                    <br>
+                    <span>(6) &#x25ef;MIN - pruning occurred: <span id="minprun"></span></span>
                 </div> 
                 <div class="row grey lighten-3">
                     <div class="col l8">
