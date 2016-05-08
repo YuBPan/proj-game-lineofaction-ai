@@ -309,13 +309,14 @@ function invalid_click(invalid_grid) {
 }
 
 // return valid actions for the player
-// 	[[r_move_from, c_move_from, r_move_to, c_move_to], ... ]
+// 	[[r_move_from, c_move_from, r_move_to, c_move_to],
+//	  ... ]
 function return_valid_actions(state, player) {
-	valid_actions = [];
+	var valid_actions = [];
 	if (player == 1) {
-		opponent = -1;
+		var opponent = -1;
 	} else {
-		opponent = 1;
+		var opponent = 1;
 	}
 
 	// ←→↑↓↖↘↗↙
