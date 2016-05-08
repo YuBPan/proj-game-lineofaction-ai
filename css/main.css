@@ -23,12 +23,41 @@
   -webkit-font-smoothing: antialiased;
 }
 
+
+
+.helpicon {
+  float: left;
+  background-color: #26A69A;
+}
+.helpicon:hover {
+  background-color: #00897B;
+}
+
+.emoji {
+  height: 2.1em;
+}
+
 .navinfo {
   background-color: white;
   color: black;
+  padding-top: 5px;
   padding-bottom: 5px;
+  font-size: 15px;
 }
 
+#helpinfo {
+  z-index: 9;
+}
+#helpinfo .modal-content a {
+  color: #2196F3;
+  text-decoration: underline;
+}
+#helpinfo .modal-content h4 {
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.helpinfomain {
+  color: #2196F3;
+}
 
 
 
@@ -94,6 +123,12 @@
 
 
 
+.statixname {
+  width: 260px;
+  display: inline-block;
+}
+
+
 
 
 
@@ -109,9 +144,24 @@
   color: #E91E63;
 }
 
+.monitor {
+  margin-top: 20px;
+}
+
 #monitorinfo,
 #matrixinfo {
   height: 150px;
   display: block;
   overflow: auto;
+}
+
+.infoitem0,
+.infoitem0 span {
+  background-color: #E0E0E0;
+}
+.infoitem1 {
+  
+}
+.time {
+  float: right;
 }

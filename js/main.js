@@ -13,16 +13,25 @@ is_start = false;
 is_over = false;
 
 // setting info
-black_player_who = "";		// "H", "A"
-black_player_cutoff_depth = "";	// "1", "2", "3"
+black_player_who = "";		// "Human", "AI"
+black_player_cutoff_depth = 0;	// "1", "2", "3"
 white_player_who = "";
-white_player_cutoff_depth = "";
+white_player_cutoff_depth = 0;
+
+// statistics info for ai
+maxdepth = 0;
+totalnodes = 1;
+maxeval = 0;
+mineval = 0;
+maxprun = 0;
+minprun = 0;
+
+
 
 $(document).ready(function() {
 	initial_game();
 });
 
-timebegin = 0;
 function timerfunc(timecurrent) {
 	var time = timecurrent - timebegin;
 	percentage = time / 10000 * 100;
@@ -41,40 +50,49 @@ function initial_game() {
 	is_start = false;
 	is_over = false;		
 	black_player_who = "";
-	black_player_cutoff_depth = "";
+	black_player_cutoff_depth = 0;
 	white_player_who = "";
-	white_player_cutoff_depth = "";
+	white_player_cutoff_depth = 0;
+	
+	$(".emoji").attr("src", "")
 
 	initial_boardsize5();
-	
-	$(".settings input").prop("disabled" ,false);
-	$(".settings label").removeClass("is-disabled");
 
-	$(".whiteplayer .difficultylevel label").removeClass("is-disabled");
+	initial_statix_info();
+
+	if ($(".humanbtn1").hasClass("is-checked")) {
+		$(".difficultylevel1").css("opacity", 0.1);
+	}
+	if ($(".humanbtn2").hasClass("is-checked")) {
+		$(".difficultylevel2").css("opacity", 0.1);
+	}	
+	$(".settings input").prop("disabled" ,false);
+	$(".settings label").removeClass("is-disabled");	
+
+
 	if ($("#start").prop("disabled") == true) {
 		$("#start").prop("disabled", false);
 	}
 	$(".navinfo").html("");
 	display_monitor_info("Initialized");
-	// $("#timernum").html(Date());
 }
 
 $(".humanbtn").click(function(){
 	if (!is_start) {
-		$(this).closest(".row").find(".difficultylevel input").prop("disabled" ,true);
-		$(this).closest(".row").find(".difficultylevel label").addClass("is-disabled");
+		$(this).closest(".row").find(".difficultylevel").css("opacity", 0.1);
 	}
 });
 
 $(".aibtn").click(function(){
 	if (!is_start) {
-		$(this).closest(".row").find(".difficultylevel input").prop("disabled" ,false);
-		$(this).closest(".row").find(".difficultylevel label").removeClass("is-disabled");
+		$(this).closest(".row").find(".difficultylevel").css("opacity", 1);
 	}
 });
 
 $(".boardsize5").click(function() {
-	initial_boardsize5();
+	if (!is_start) {
+		initial_boardsize5();
+	}
 });
 function initial_boardsize5() {
 	$(".r5").css("opacity", "0");
@@ -83,11 +101,15 @@ function initial_boardsize5() {
 	initial_matrix();
 	initial_board_attr_rc();
 	update_board();
-	display_matrix();	
+	display_matrix();
+	$(".boardsize5").addClass("is-checked");
+	$(".boardsize6").removeClass("is-checked");
 }
 
 $(".boardsize6").click(function() {
-	initial_boardsize6();
+	if (!is_start) {
+		initial_boardsize6();
+	}
 });
 function initial_boardsize6() {
 	$(".r5").css("opacity", "1");
@@ -97,42 +119,55 @@ function initial_boardsize6() {
 	initial_board_attr_rc();
 	update_board();
 	display_matrix();	
+	$(".boardsize5").removeClass("is-checked");
+	$(".boardsize6").addClass("is-checked");	
 }
 
+$(".helpicon").click(function(){
+	$("#helpinfo").css("display", "initial");
+})
+$(".helpclose").click(function(){
+	$("#helpinfo").css("display", "none");
+})
+
 $("#start").click(function(){
+	$(".emoji").attr("src", "img/winking.png")
+
+	set_difficulty_level($(".blackplayer").find(".difficultylevel .is-checked").attr("value"), 
+						 $(".whiteplayer").find(".difficultylevel .is-checked").attr("value"));
+
 	blackplayerinfo = "";
 	black_player_who = $(".blackplayer").find(".who .is-checked").attr("value");
-	black_player_cutoff_depth = "";
-	if (black_player_who == "H") {
-		blackplayerinfo += $(".blackplayer").find(".who .is-checked .mdl-radio__label").text();
+	if (black_player_who == "Human") {
+		blackplayerinfo += $(".blackplayer").find(".who .is-checked .mdl-radio__label").text() + ", " +
+						   black_player_who;
 	} else {
-		blackplayerinfo += $(".blackplayer").find(".who .is-checked .mdl-radio__label").text() + "-" + 
-						   $(".blackplayer").find(".difficultylevel .is-checked .mdl-radio__label").text();
+		blackplayerinfo += $(".blackplayer").find(".who .is-checked .mdl-radio__label").text() + "(" + 
+						   $(".blackplayer").find(".difficultylevel .is-checked .mdl-radio__label").text() + "), " +
+						   black_player_who + ", " + black_player_cutoff_depth;
 	}
 	
 	whiteplayerinfo = "";
 	white_player_who = $(".whiteplayer").find(".who .is-checked").attr("value");
-	white_player_cutoff_depth = "";
-	if (white_player_who == "H") {
-		whiteplayerinfo += $(".whiteplayer").find(".who .is-checked .mdl-radio__label").text();
+	if (white_player_who == "Human") {
+		whiteplayerinfo += $(".whiteplayer").find(".who .is-checked .mdl-radio__label").text() + ", " +
+						   white_player_who;
 	} else {
-		whiteplayerinfo += $(".whiteplayer").find(".who .is-checked .mdl-radio__label").text() + "-" + 
-						   $(".whiteplayer").find(".difficultylevel .is-checked .mdl-radio__label").text();
+		whiteplayerinfo += $(".whiteplayer").find(".who .is-checked .mdl-radio__label").text() + "(" + 
+						   $(".whiteplayer").find(".difficultylevel .is-checked .mdl-radio__label").text() + "), " +
+						   white_player_who + ", " + white_player_cutoff_depth;
 	}
-	
-	set_difficulty_level($(".blackplayer").find(".difficultylevel .is-checked").attr("value"), 
-						 $(".whiteplayer").find(".difficultylevel .is-checked").attr("value"));
+
+	display_monitor_info("&#x2b24;: " + blackplayerinfo);	
+	display_monitor_info("&#x25ef;: " + whiteplayerinfo);
 
 	$(".settings input").prop("disabled" ,true);
 	$(".settings label").addClass("is-disabled");
 
-	display_monitor_info("&#x2b24;: " + blackplayerinfo + ", " + black_player_who + ", " + black_player_cutoff_depth);	
-	display_monitor_info("&#x25ef;: " + whiteplayerinfo + ", " + white_player_who + ", " + white_player_cutoff_depth);	
-
 	is_start = true;
 	$(this).prop("disabled", true);
 
-	if (black_player_who == "A") {	
+	if (black_player_who == "AI") {	
 		ai_turn(1, black_player_cutoff_depth);
 	}
 });
@@ -144,47 +179,42 @@ $("#restart").click(function(){
 
 // play game
 $(".grid").click(function(){
-	if ($(".board").hasClass("move1")) {
-		// now move to green or undo move1
-		$(".board").removeClass("move1");
-		$move1piece = $(".blue");
-		if ($(this).hasClass("green")) {
-			// move to green
-			perform_action([$move1piece.attr("r"), $move1piece.attr("c"), $(this).attr("r"), $(this).attr("c")]);			
-			if (!is_over) {
-				if (counter_id % 2 == 0) {
-					if (black_player_who == "A") {
-						ai_turn(1, black_player_cutoff_depth);
-					}				
-				} else if (counter_id % 2 == 1) {
-					if (white_player_who == "A") {
-						ai_turn(-1, white_player_cutoff_depth);
-					}				
-				}
+	if (is_start) {
+		$(".grid").removeClass("fadeout");
+		if ($(".board").hasClass("move1")) {
+			// now move to green or undo move1
+			$(".board").removeClass("move1");
+			$move1piece = $(".blue");
+			if ($(this).hasClass("green")) {
+				// move to green
+				perform_action([$move1piece.attr("r"), $move1piece.attr("c"), $(this).attr("r"), $(this).attr("c")]);			
+			}
+			$move1piece.removeClass("blue");
+			$move1piece.addClass("grey");		
+			$valid_pieces = $(".green");
+			$valid_pieces.removeClass("green");
+			$valid_pieces.addClass("grey");
+		} else {
+			// now move1
+			if ((counter_id % 2 == 0 && $(this).find(".piece").hasClass("white")) || 
+				(counter_id % 2 == 1 && $(this).find(".piece").hasClass("black")) || 
+				(!$(this).find(".piece").hasClass("white") && !$(this).find(".piece").hasClass("black")) ||
+				is_over) {
+				// invalid click
+				invalid_click($(this));
+			} else {
+				$(".board").addClass("move1");
+				$(this).removeClass("grey");
+				$(this).addClass("blue");
+				display_valid_actions(return_valid_actions(matrix, matrix[$(this).attr("r")][$(this).attr("c")]), $(this).attr("r"), $(this).attr("c"));
 			}
 		}
-		$move1piece.removeClass("blue");
-		$move1piece.addClass("grey");		
-		$valid_pieces = $(".green");
-		$valid_pieces.removeClass("green");
-		$valid_pieces.addClass("grey");
 	} else {
-		// now move1
-		if ((counter_id % 2 == 0 && $(this).find(".piece").hasClass("white")) || 
-			(counter_id % 2 == 1 && $(this).find(".piece").hasClass("black")) || 
-			(!$(this).find(".piece").hasClass("white") && !$(this).find(".piece").hasClass("black")) ||
-			is_over) {
-			// invalid click
-			invalid_click($(this));
-		} else {
-			$(".board").addClass("move1");
-			$(this).removeClass("grey");
-			$(this).addClass("blue");
-			display_valid_actions(return_valid_actions(matrix, matrix[$(this).attr("r")][$(this).attr("c")]), $(this).attr("r"), $(this).attr("c"));
-		}
+		invalid_click($(this));
 	}
-	
 });
+
+
 
 function set_difficulty_level(black_level, white_level) {
 	if (black_level == "l1") {
@@ -192,14 +222,14 @@ function set_difficulty_level(black_level, white_level) {
 	} else if (black_level == "l2") {
 		black_player_cutoff_depth = 5;
 	} else if (black_level == "l3") {
-		black_player_cutoff_depth = 15;
+		black_player_cutoff_depth = 9;
 	}
 	if (white_level == "l1") {
 		white_player_cutoff_depth = 1;
 	} else if (white_level == "l2") {
 		white_player_cutoff_depth = 5;
 	} else if (white_level == "l3") {
-		white_player_cutoff_depth = 15;
+		white_player_cutoff_depth = 9;
 	}
 }
 
@@ -230,6 +260,17 @@ function initial_board_attr_rc() {
 	}	
 }
 
+// initial statistics info
+function initial_statix_info() {
+	maxdepth = 0;
+	totalnodes = 1;
+	maxeval = 0;
+	mineval = 0;
+	maxprun = 0;
+	minprun = 0;
+	display_statix_info();
+}
+
 // update board ui according to matrix
 function update_board() {
 	for (r = 0; r < board_size; r++) {
@@ -257,7 +298,7 @@ function update_board() {
 	}	
 }
 
-function invalid_click(invalid_grid) {
+function invalid_click(invalid_grid) {	
 	$(invalid_grid).removeClass("grey");
 	$(invalid_grid).addClass("red");
 	setTimeout(function() {
@@ -265,7 +306,6 @@ function invalid_click(invalid_grid) {
 		$(invalid_grid).removeClass("red");
 		$(invalid_grid).addClass("grey");
 	}, 500);
-	$(invalid_grid).removeClass("fadeout");
 }
 
 // return valid actions for the player
@@ -469,39 +509,63 @@ function perform_action (action) {
 		display_monitor_info("&#x25ef; " + action[0] + "," + action[1] + " -> " + action[2] + "," + action[3]);
 	}
 	if (terminal_test(matrix)) {
-		is_over = true;		
+		is_over = true;
+		if ((winner == "&#x2b24;" && black_player_who == "AI") ||
+		   (winner == "&#x25ef;" && white_player_who == "AI")) {
+			$(".emoji").attr("src", "img/smiling.png");
+			winner += "AI ";
+		} else {
+			$(".emoji").attr("src", "img/frowning.png");
+			winner += "Human ";
+		}		
 		display_monitor_info(winner + '<span class="win"> WIN</span>');
 		$(".navinfo").html(winner + '<span class="win"> WIN</span>');
 	}	
 	update_board();
+	if (!is_over) {
+		if (counter_id % 2 == 0) {
+			if (black_player_who == "AI") {
+				ai_turn(1, black_player_cutoff_depth);
+			}				
+		} else if (counter_id % 2 == 1) {
+			if (white_player_who == "AI") {
+				ai_turn(-1, white_player_cutoff_depth);
+			}				
+		}
+	}	
 }
 
 function ai_turn(player, player_level) {
-	// important! this enables display other's move first, before ai_turn perform its action
 	timebegin = (new Date()).getTime();
 	console.log("ai_begin >> " + timebegin);
 	timerfunc(timebegin);	
+	$(".emoji").attr("src", "img/thinking.png");
+
 	setTimeout(function() {
+	// important! this enables display other's move first, before ai_turn perform its action		
 		alpha_beta_action = alpha_beta_search(matrix, player, player_level);
-		perform_action(alpha_beta_action);		
+		perform_action(alpha_beta_action);
+
+		display_statix_info();
+
 		console.log("ai_end -- " + (new Date()).getTime());
 		timerfunc((new Date()).getTime());
-	}, 0);		
+		$(".emoji").attr("src", "img/winking.png");
+	}, 1);		
 }
+
+
 
 /* ==========================================================================
    alpha-beta pruning algorithm
 *  ========================================================================== */
 
 function alpha_beta_search(state, player, player_level) {
-	console.log("alpha_beta_search >> ");
-	// global
+	console.log(counter_id + ". alpha_beta_search >> ");
+
+	initial_statix_info();
+
 	var actions_depth0 = {};
-	if (player == 1) {
-		opponent = -1;
-	} else if (player == -1) {
-		opponent = 1;
-	}	
 
 	var valid_actions = return_valid_actions(state, player);
 	for (var i in valid_actions) {
@@ -523,24 +587,28 @@ function alpha_beta_search(state, player, player_level) {
 		// console.log(actions_depth0[valid_actions[i]]);
 		if (actions_depth0[valid_actions[i]] == v) {
 			console.log(valid_actions[i]);
-			console.log("alpha_beta_search -- ");
+			console.log(counter_id + ". alpha_beta_search -- ");
 			return valid_actions[i];
 		}
 	}
-	console.log("alpha_beta_search -------- ");
+	console.log(counter_id + ". alpha_beta_search ---------- ");
 	return valid_actions[i];
 
 	function max_value(state, a, b, depth) {
+		maxdepth = Math.max(maxdepth, depth);
+
 		// console.log(new Date().getTime() - timebegin);
 		// console.log("max - d: " + depth);
 		if (terminal_test(state)) {
 			return utility_value(state);
 		}
 		if (cutoff_test(state, depth)) {
+			maxeval++;
 			return eval_func(state);
 		}
 		var v = -999;
 		var valid_actions = return_valid_actions(state, 1);
+		totalnodes += valid_actions.length;
 		for (var i in valid_actions) {
 			// console.log("max - i: " + i);
 			v = Math.max(v, min_value(result(state, valid_actions[i]) , a, b, depth + 1));
@@ -550,6 +618,7 @@ function alpha_beta_search(state, player, player_level) {
 			}
 
 			if (v >= b) {
+				maxprun++;
 				return v;
 			}
 			a = Math.max(a, v);
@@ -558,15 +627,19 @@ function alpha_beta_search(state, player, player_level) {
 	}
 
 	function min_value(state, a, b, depth) {
+		maxdepth = Math.max(maxdepth, depth);
+
 		// console.log("min - d: " + depth);
 		if (terminal_test(state)) {
 			return utility_value(state);
 		}
 		if (cutoff_test(state, depth)) {
+			mineval++;
 			return eval_func(state);
 		}
 		var v = +999;
 		var valid_actions = return_valid_actions(state, -1);
+		totalnodes += valid_actions.length;
 		for (var i in valid_actions) {
 			// console.log("min - i: " + i);
 			v = Math.min(v, max_value(result(state, valid_actions[i]) , a, b, depth + 1));
@@ -576,6 +649,7 @@ function alpha_beta_search(state, player, player_level) {
 			}
 
 			if (v <= a) {
+				minprun++;
 				return v;
 			}
 			b = Math.min(b, v);
@@ -607,8 +681,8 @@ function alpha_beta_search(state, player, player_level) {
 		}
 	}
 
-	function cutoff_test(state, depth) {
-		if (depth == player_level) {
+	function cutoff_test(state, givendepth) {
+		if (givendepth == player_level) {
 			return true;
 		} else if (new Date().getTime() - timebegin >= 10000){
 			return true;
@@ -617,9 +691,12 @@ function alpha_beta_search(state, player, player_level) {
 		}
 	}
 
-	function eval_func(state) {
-		// return Math.floor((Math.random() * 99) + 1);
-		return 1;
+	function eval_func(state) {	
+		var eval_value = eval(state);
+		if (eval_value >= 100 || eval_value <= -100) {
+			alert(eval_value);
+		}
+		return eval_value;
 	}
 }
 
@@ -629,7 +706,30 @@ function alpha_beta_search(state, player, player_level) {
    terminal test
 *  ========================================================================== */
 // test if now is a terminal state, if is, update winner 
-function terminal_test(givenstate) {
+function terminal_test(state) {
+	var nums = [0, 0];
+	nums = compute_islands(state);
+
+	winner = "";
+	if (nums[0] == 1 && nums[1] == 1) {
+		if (counter_id % 2 == 0) {
+			winner = "&#x25ef;";
+		} else if (counter_id % 2 == 1) {
+			winner = "&#x2b24;";
+		}
+	} else if (nums[0] == 1) {
+		winner = "&#x2b24;";
+	} else if (nums[1] == 1) {
+		winner = "&#x25ef;";
+	}
+
+	return (nums[0] == 1 || nums[1] == 1);
+}
+
+// return number array of black, white islands
+function compute_islands(givenstate) {
+	var nums = [0, 0];
+
 	var state = new Array(board_size);
 	for (r = 0; r < board_size; r++) {
 		state[r] = new Array(board_size);
@@ -637,12 +737,12 @@ function terminal_test(givenstate) {
 			state[r][c] = givenstate[r][c];
 		}
 	}
-	island_black = 0;
-	island_white = 0;
+	var island_black = 0;
+	var island_white = 0;
 	// console.log(counter_id + ": terminal_test >> island_black: " + island_black + " island_white: " + island_white);
 	// initialize visited for black and white
-	visited_black = new Array(board_size);
-	visited_white = new Array(board_size);	
+	var visited_black = new Array(board_size);
+	var visited_white = new Array(board_size);	
 	for (r = 0; r < board_size; r++) {
 		visited_black[r] = new Array(board_size);
 		visited_white[r] = new Array(board_size);	
@@ -670,21 +770,10 @@ function terminal_test(givenstate) {
 
 	// console.log(state);
 	// console.log(counter_id + ": terminal_test >>>>>> island_black: " + island_black + " island_white: " + island_white);
-	
-	winner = "";
-	if (island_black == 1 && island_white == 1) {
-		if (counter_id % 2 == 0) {
-			winner = "&#x2b24;";
-		} else if (counter_id % 2 == 1) {
-			winner = "&#x25ef;";
-		}
-	} else if (island_black == 1) {
-		winner = "&#x2b24;";
-	} else if (island_white == 1) {
-		winner = "&#x25ef;";
-	}
 
-	return (island_black == 1 || island_white == 1);
+	nums[0] = island_black;
+	nums[1] = island_white;
+	return nums;
 }
 
 // check if r, c is valid value
@@ -715,15 +804,27 @@ function dfs_state(state, r, c, visited, player) {
 	}
 }
 
+
+
 /* ==========================================================================
-   display help info
+   display statistics, monitor info
 *  ========================================================================== */
-// display record info
+// display statistics info
+function display_statix_info() {
+	$(".maxdepth").text($.number(maxdepth));
+	$(".totalnodes").text($.number(totalnodes));
+	$(".maxeval").text($.number(maxeval));
+	$(".mineval").text($.number(mineval));
+	$(".maxprun").text($.number(maxprun));
+	$(".minprun").text($.number(minprun));
+}
+
+// display monitor info
 function display_monitor_info(info) {
 	d = new Date();
-	$("#monitorinfo").prepend('<span class="infoid">[' + info_id + "]</span> " + 
-							  '<span class="movecounter">[' + counter_id + "]</span> " + info + "  --  " + 
-							  d.getMinutes() + " '" + d.getSeconds() + " ''" + d.getMilliseconds() + "<br>");
+	$("#monitorinfo").prepend('<div class="infoitem' + (info_id % 2)  + '"><span class="infoid">[' + info_id + ']</span> ' + 
+							  '<span class="movecounter">[' + counter_id + ']</span> ' + info + '<span class="time">['  + 
+							  d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + "." + d.getMilliseconds() + ']</span></div>');
 	info_id++;
 }
 
