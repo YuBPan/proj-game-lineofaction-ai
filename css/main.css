@@ -27,10 +27,10 @@
 
 .helpicon {
   float: left;
-  background-color: #26A69A;
+  background-color: #424242;
 }
 .helpicon:hover {
-  background-color: #00897B;
+  background-color: #616161;
 }
 
 .emoji {
