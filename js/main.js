@@ -30,6 +30,7 @@ minprun = 0;
 
 $(document).ready(function() {
 	initial_game();
+	$('.modal-trigger').leanModal();
 });
 
 function timerfunc(timecurrent) {
@@ -122,13 +123,6 @@ function initial_boardsize6() {
 	$(".boardsize5").removeClass("is-checked");
 	$(".boardsize6").addClass("is-checked");	
 }
-
-$(".helpicon").click(function(){
-	$("#helpinfo").css("display", "initial");
-})
-$(".helpclose").click(function(){
-	$("#helpinfo").css("display", "none");
-})
 
 $("#start").click(function(){
 	$(".emoji").attr("src", "img/winking.png")

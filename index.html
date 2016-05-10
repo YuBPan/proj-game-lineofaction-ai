@@ -25,11 +25,18 @@
 
     <body>
         <nav>
-            <div class="nav-wrapper teal">
-                <a href="#" class="brand-logo"><i class="material-icons helpicon">help_outline</i>AI LOA <img class="emoji" src="" alt=""><span class="navinfo"></span></a>               
+            <div class="nav-wrapper teal">                
+                <a class="modal-trigger returnhome" href="#returnhome">
+                    <i class="material-icons">arrow_back</i>
+                </a>
+                <a href="#" class="brand-logo">
+                    AI LOA <img class="emoji" src="" alt=""><span class="navinfo"></span>
+                </a>
+                <a class="modal-trigger helpicon" href="#helpinfo">
+                    <i class="material-icons">help_outline</i>
+                </a>                               
             </div>
         </nav>
-
         <div id="helpinfo" class="modal modal-fixed-footer">
             <div class="modal-content">
                 <h4>How to play:</h4>
@@ -46,9 +53,18 @@
                 <p>&#169;2016</p>
             </div>
             <div class="modal-footer">
-                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat helpclose">Got it</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Got it</a>
             </div>
         </div>
+        <div id="returnhome" class="modal">
+            <div class="modal-content">
+                <h4>Return to yubopan.com?</h4>
+            </div>
+            <div class="modal-footer">
+                <a href="http://www.yubopan.com/" class="modal-action modal-close waves-effect waves-green btn-flat">Leave</a>
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Stay</a>
+            </div>
+        </div>        
 
         <div class="row timer">
             <span id="timernum">0.00s / 10.00s</span>
